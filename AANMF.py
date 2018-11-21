@@ -75,12 +75,12 @@ class AANMF(nn.Module):
         '''
         q_i_repeat = embed_item.unsqueeze(1).repeat(1,3,1)  # batch x embed_dim --> batch x len(att_set) x embed_dim
         V = torch.cat([q_i_repeat, att_set],dim=2)   # b x len x (embed_dim*2)
-        #v = F.tanh(self.att_linear1(V))  # b x len x embed_dim
-        # v = self.att_linear2(v)  # b x len x 1
+        v = F.tanh(self.att_linear1(V))  # b x len x embed_dim
+        v = self.att_linear2(v)  # b x len x 1
         #
-        # lambdda = self.att_softmax(V)
+        lambdda = self.att_softmax(v)
 
-        lambdda = F.sigmoid(self.vector2rate(V))  # b x len x rate
+        #lambdda = F.sigmoid(self.vector2rate(V))  # b x len x rate
 
         return lambdda
 
@@ -108,7 +108,7 @@ class AANMF(nn.Module):
             att_set: a list of attribute embed after attention
             embed_uid: embed of user
         '''
-        return torch.sum(attset,dim=1)/attset.shape[1]+embed_uid
+        return torch.sum(attset,dim=1)+embed_uid
 
 
     def forward(self, user_input, movie_input):
@@ -139,7 +139,7 @@ class AANMF(nn.Module):
         # ---------------------------------Attention Layer------------------------------------------------------------------
         #lambda_att = self.attention_cell(att_set=att_set, embed_item=embedding_mid) if self.attention else 1/att_set.shape[1]
 
-        lambda_att = self.attention_cell(att_set=att_set, embed_item=embedding_mid) if self.attention else 1
+        lambda_att = self.attention_cell(att_set=att_set, embed_item=embedding_mid) if self.attention else 1/3
 
         # ----------------------------------Pooling Layer----------------------------------------------------------------------
         #feature_user = self.pairwise_pooling(lambda_att*att_set, embedding_uid)
@@ -162,7 +162,7 @@ class AANMF(nn.Module):
             out = self.svd_outlayer(torch.cat([feature_user,feature_item],dim=1))
             #out = torch.bmm(feature_user.view(-1,1,self.embed_dim), feature_item.view(-1,self.embed_dim,1)).squeeze(1)
 
-        return out
+        return out, lambda_att 
 
 
 
