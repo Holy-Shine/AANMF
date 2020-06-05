@@ -7,4 +7,4 @@ paper link: http://itc.ktu.lt/index.php/ITC/article/view/23149
 
 ## Model Structure
 
-![](img\aanmf.jpg)
+![](https://github.com/Holy-Shine/AANMF/blob/master/img/aanmf.jpg?raw=true)
