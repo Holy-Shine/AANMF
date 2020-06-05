@@ -7,4 +7,4 @@ paper link: http://itc.ktu.lt/index.php/ITC/article/view/23149
 
 ## Model Structure
 
-![](img\aanmf.svg)
+![](img\aanmf.jpg)
